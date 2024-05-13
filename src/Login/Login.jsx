@@ -1,4 +1,5 @@
 import {
+  GithubAuthProvider,
   GoogleAuthProvider,
   getAuth,
   signInWithPopup,
@@ -6,12 +7,14 @@ import {
 } from "firebase/auth";
 import app from "../Firebase/Firebase.init";
 import { useState } from "react";
+// import { GithubAuthProvider } from "firebase/auth/cordova";
 const Login = () => {
   const [user, setUser] = useState(null);
   const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
+  const googleProvider = new GoogleAuthProvider();
+  const gitHUbProvider = new GithubAuthProvider();
   const handleGoogleSignIn = () => {
-    signInWithPopup(auth, provider)
+    signInWithPopup(auth, googleProvider)
       .then((result) => {
         const loggedInUser = result.user;
         console.log(loggedInUser);
@@ -20,6 +23,18 @@ const Login = () => {
       .catch((error) => {
         console.log("Error", error.message);
       });
+  };
+
+  const handleGitHubSignIn = () => {
+    signInWithPopup(auth, gitHUbProvider)
+      .then((result) => {
+      const loggedInUser = result.user;
+      console.log(loggedInUser);
+      setUser(loggedInUser);
+    })
+    .catch(error=> {
+      console.log(error);
+    });
   };
 
   const handleGoogleSignOut = () => {
@@ -37,12 +52,17 @@ const Login = () => {
       {/* sign in and sign out button will be toggle here. */}
       {user ? (
         <button onClick={handleGoogleSignOut} className="btn">
-          Google Log Out
+          Log Out
         </button>
       ) : (
-        <button onClick={handleGoogleSignIn} className="btn">
-          Google Login
-        </button>
+        <div>
+          <button onClick={handleGoogleSignIn} className="btn">
+            Google Login
+          </button>
+          <button onClick={handleGitHubSignIn} className="btn">
+            GitHub Login
+          </button>
+        </div>
       )}
 
       {user && (
